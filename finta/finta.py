@@ -1195,6 +1195,86 @@ class TA:
         )
 
     @classmethod
+    def PIVOT_FIB_1440(cls, ohlc: DataFrame) -> DataFrame:
+        """
+        Fibonacci pivot point levels are determined by first calculating the classic pivot point,
+        then multiply the range of the last 1440 data points with its corresponding Fibonacci level.
+        Most traders use the 38.2%, 61.8% and 100% retracements in their calculations.
+        """
+
+        df = ohlc.rolling(window=1440).min().shift()
+        df_high = ohlc['high'].rolling(window=1440).max().shift()
+        df_low = ohlc['low'].rolling(window=1440).min().shift()
+        df_close = ohlc['close'].shift()
+
+        pp = (df_high + df_low + df_close) / 3  # classic pivot
+
+        r4 = pp + ((df_high - df_low) * 1.382)
+        r3 = pp + ((df_high - df_low) * 1)
+        r2 = pp + ((df_high - df_low) * 0.618)
+        r1 = pp + ((df_high - df_low) * 0.382)
+
+        s1 = pp - ((df_high - df_low) * 0.382)
+        s2 = pp - ((df_high - df_low) * 0.618)
+        s3 = pp - ((df_high - df_low) * 1)
+        s4 = pp - ((df_high - df_low) * 1.382)
+
+        return pd.concat(
+            [
+                pp,
+                pd.Series(s1, name="s1"),
+                pd.Series(s2, name="s2"),
+                pd.Series(s3, name="s3"),
+                pd.Series(s4, name="s4"),
+                pd.Series(r1, name="r1"),
+                pd.Series(r2, name="r2"),
+                pd.Series(r3, name="r3"),
+                pd.Series(r4, name="r4"),
+            ],
+            axis=1,
+        )
+
+    @classmethod
+    def PIVOT_FIB_14400(cls, ohlc: DataFrame) -> DataFrame:
+        """
+        Fibonacci pivot point levels are determined by first calculating the classic pivot point,
+        then multiply the range of the last 1440 data points with its corresponding Fibonacci level.
+        Most traders use the 38.2%, 61.8% and 100% retracements in their calculations.
+        """
+
+        df = ohlc.rolling(window=14400).min().shift()
+        df_high = ohlc['high'].rolling(window=14400).max().shift()
+        df_low = ohlc['low'].rolling(window=14400).min().shift()
+        df_close = ohlc['close'].shift()
+
+        pp = (df_high + df_low + df_close) / 3  # classic pivot
+
+        r4 = pp + ((df_high - df_low) * 1.382)
+        r3 = pp + ((df_high - df_low) * 1)
+        r2 = pp + ((df_high - df_low) * 0.618)
+        r1 = pp + ((df_high - df_low) * 0.382)
+
+        s1 = pp - ((df_high - df_low) * 0.382)
+        s2 = pp - ((df_high - df_low) * 0.618)
+        s3 = pp - ((df_high - df_low) * 1)
+        s4 = pp - ((df_high - df_low) * 1.382)
+
+        return pd.concat(
+            [
+                pp,
+                pd.Series(s1, name="s1"),
+                pd.Series(s2, name="s2"),
+                pd.Series(s3, name="s3"),
+                pd.Series(s4, name="s4"),
+                pd.Series(r1, name="r1"),
+                pd.Series(r2, name="r2"),
+                pd.Series(r3, name="r3"),
+                pd.Series(r4, name="r4"),
+            ],
+            axis=1,
+        )
+
+    @classmethod
     def STOCH(cls, ohlc: DataFrame, period: int = 14) -> Series:
         """Stochastic oscillator %K
          The stochastic oscillator is a momentum indicator comparing the closing price of a security
